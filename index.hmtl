@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive 3D Mud Pot Cooler | Complete Project</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00a8ff;
+            --primary-dark: #0097e6;
+            --secondary: #2c3e50;
+            --accent: #e74c3c;
+            --accent2: #f39c12;
+            --accent3: #8e44ad;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #7f8c8d;
+            --success: #2ecc71;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.7;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            overflow-x: hidden;
+            cursor: default;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.95), rgba(52, 73, 94, 0.95));
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 1.2rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            border-bottom: 3px solid var(--primary);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+        
+        .logo i {
+            color: var(--primary);
+            font-size: 2.2rem;
+            animation: pulse 2s infinite;
+        }
+        
+        .logo span {
+            background: linear-gradient(45deg, var(--primary), #00d2ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 25px;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        nav a:hover, nav a.active {
+            background: rgba(0, 168, 255, 0.15);
+            color: var(--primary);
+        }
+        
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+        
+        nav a:hover::after, nav a.active::after {
+            width: 60%;
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 160px 0 100px;
+            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.8)), 
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="%2300a8ff" stroke-width="0.5" stroke-opacity="0.1"/><circle cx="20" cy="20" r="15" fill="none" stroke="%2300a8ff" stroke-width="0.5" stroke-opacity="0.1"/><circle cx="80" cy="80" r="25" fill="none" stroke="%2300a8ff" stroke-width="0.5" stroke-opacity="0.1"/></svg>');
+            background-size: cover;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 14px 32px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 168, 255, 0.3);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+        
+        /* Interactive 3D Model Section */
+        .model-section {
+            padding: 100px 0;
+            background: white;
+            position: relative;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        
+        .section-title h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 5px;
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 3px;
+        }
+        
+        .section-title p {
+            color: var(--gray);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 1.5rem auto 0;
+        }
+        
+        /* Interactive 3D Container */
+        .model-container {
+            position: relative;
+            background: linear-gradient(135deg, #0a192f 0%, #112240 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 3rem;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid rgba(0, 168, 255, 0.2);
+        }
+        
+        .model-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(0, 168, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 168, 255, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        /* 3D Scene Container */
+        .scene-container {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            perspective: 1200px;
+            transform-style: preserve-3d;
+            cursor: grab;
+            user-select: none;
+        }
+        
+        .scene-container:active {
+            cursor: grabbing;
+        }
+        
+        /* 3D Scene */
+        .scene-3d {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotateX(-10deg);
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+        }
+        
+        /* 3D Components */
+        .component-3d {
+            position: absolute;
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease;
+        }
+        
+        /* Mud Pot - 3D */
+        .mud-pot-3d {
+            width: 180px;
+            height: 240px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotateY(var(--rotate-y, 0deg)) rotateX(var(--rotate-x, 0deg));
+        }
+        
+        .pot-body-3d {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #8d6e63, #a1887f);
+            border-radius: 20px 20px 100px 100px;
+            transform-style: preserve-3d;
+            box-shadow: 
+                inset 0 -10px 20px rgba(0, 0, 0, 0.3),
+                0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+        
+        .pot-body-3d::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: linear-gradient(135deg, #795548, #6d4c41);
+            border-radius: 20px 20px 0 0;
+            transform: translateZ(5px);
+        }
+        
+        .pot-body-3d::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 20px;
+            right: 20px;
+            height: 150px;
+            background: linear-gradient(to top, rgba(0, 168, 255, 0.3), rgba(0, 168, 255, 0.6));
+            border-radius: 0 0 80px 80px;
+            animation: waterShimmer 4s ease-in-out infinite;
+            transform: translateZ(2px);
+        }
+        
+        /* PC Fan - 3D */
+        .fan-3d {
+            width: 160px;
+            height: 160px;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%) rotateY(var(--rotate-y, 0deg)) rotateX(var(--rotate-x, 0deg));
+        }
+        
+        .fan-housing-3d {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #37474f, #546e7a);
+            border-radius: 50%;
+            transform-style: preserve-3d;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.4),
+                inset 0 -5px 15px rgba(0, 0, 0, 0.3);
+            transform: translateZ(30px);
+        }
+        
+        .fan-housing-3d::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            background: linear-gradient(135deg, #455a64, #78909c);
+            border-radius: 50%;
+            transform: translateZ(5px);
+        }
+        
+        .fan-blades-3d-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            animation: fanRotate 2s linear infinite;
+            transform: translateZ(35px);
+        }
+        
+        .fan-blade-3d {
+            position: absolute;
+            width: 70px;
+            height: 25px;
+            background: linear-gradient(135deg, #263238, #37474f);
+            border-radius: 5px;
+            top: 50%;
+            left: 50%;
+            transform-origin: 0 50%;
+            transform-style: preserve-3d;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .fan-blade-3d::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #546e7a, #78909c);
+            border-radius: 5px;
+            transform: translateZ(2px);
+        }
+        
+        .fan-blade-3d:nth-child(1) { transform: translate(0, -50%) rotate(0deg) translateZ(5px); }
+        .fan-blade-3d:nth-child(2) { transform: translate(0, -50%) rotate(90deg) translateZ(5px); }
+        .fan-blade-3d:nth-child(3) { transform: translate(0, -50%) rotate(180deg) translateZ(5px); }
+        .fan-blade-3d:nth-child(4) { transform: translate(0, -50%) rotate(270deg) translateZ(5px); }
+        
+        /* 3D Controls */
+        .controls-3d {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(10, 25, 47, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .control-btn-3d {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(0, 168, 255, 0.3);
+        }
+        
+        .control-btn-3d:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 168, 255, 0.4);
+        }
+        
+        .control-btn-3d:active {
+            transform: translateY(-1px);
+        }
+        
+        .view-info {
+            text-align: center;
+            color: var(--primary);
+            font-size: 1.1rem;
+            margin-top: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        /* Electronic Components Section - ADDED BACK */
+        .parts-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+        
+        .parts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+        
+        .part-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .part-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+        
+        .part-icon {
+            color: white;
+            font-size: 2.5rem;
+            padding: 2rem;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .part-icon.terracotta {
+            background: linear-gradient(135deg, #8d6e63, #a1887f);
+        }
+        
+        .part-icon.fan {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        }
+        
+        .part-icon.usb {
+            background: linear-gradient(135deg, #00a8ff, #0097e6);
+        }
+        
+        .part-icon.thermometer {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+        
+        .part-icon.power {
+            background: linear-gradient(135deg, #f39c12, #d35400);
+        }
+        
+        .part-icon.wires {
+            background: linear-gradient(135deg, #8e44ad, #732d91);
+        }
+        
+        .part-content {
+            padding: 2rem;
+        }
+        
+        .part-content h3 {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .part-content p {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+        }
+        
+        .part-specs {
+            background: #f8f9fa;
+            padding: 1.2rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+        
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 0.95rem;
+        }
+        
+        .spec-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* Setup Guide - ADDED BACK */
+        .setup-guide {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+        
+        .setup-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .setup-step {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+        }
+        
+        .setup-step:hover {
+            transform: translateY(-10px);
+        }
+        
+        .setup-step i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+        
+        .setup-step h4 {
+            font-size: 1.3rem;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+        
+        /* Team Section - UPDATED WITH SPECIFIED ROLES */
+        .team-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, var(--secondary), #34495e);
+            color: white;
+            text-align: center;
+        }
+        
+        .team-section .section-title h2 {
+            color: white;
+            -webkit-text-fill-color: white;
+        }
+        
+        .team-members {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+        
+        .team-member {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2.5rem 2rem;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .team-member:hover {
+            transform: translateY(-10px);
+            background: rgba(0, 168, 255, 0.2);
+            box-shadow: 0 15px 30px rgba(0, 168, 255, 0.2);
+        }
+        
+        .team-member::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent3));
+        }
+        
+        .team-member.leader::before {
+            background: linear-gradient(90deg, #f39c12, #e74c3c);
+        }
+        
+        .member-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .member-avatar::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 50%;
+            z-index: -1;
+        }
+        
+        .team-member.leader .member-avatar::before {
+            background: linear-gradient(135deg, #f39c12, #e74c3c);
+        }
+        
+        .member-avatar i {
+            font-size: 2.5rem;
+        }
+        
+        .team-member h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.8rem;
+            color: white;
+        }
+        
+        .team-role {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            padding: 5px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+        }
+        
+        .team-member.leader .team-role {
+            color: #f39c12;
+            background: rgba(243, 156, 18, 0.1);
+        }
+        
+        .team-member p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--secondary);
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .footer-logo i {
+            color: var(--primary);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .social-links a {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: var(--transition);
+        }
+        
+        .social-links a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Animation Keyframes */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        @keyframes fanRotate {
+            from { transform: translateZ(35px) rotate(0deg); }
+            to { transform: translateZ(35px) rotate(360deg); }
+        }
+        
+        @keyframes waterShimmer {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+        
+        /* View Angle Display */
+        .view-angle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero h1 { font-size: 2.8rem; }
+            .scene-container { height: 400px; }
+            .model-container { height: 500px; }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content { flex-direction: column; gap: 1rem; }
+            nav ul { flex-wrap: wrap; justify-content: center; }
+            .hero { padding: 140px 0 60px; }
+            .hero h1 { font-size: 2.2rem; }
+            .cta-buttons { flex-direction: column; align-items: center; }
+            .btn { width: 100%; max-width: 300px; justify-content: center; }
+            .controls-3d { flex-wrap: wrap; }
+            .scene-3d { transform: translate(-50%, -50%) rotateX(-15deg) scale(0.8); }
+        }
+        
+        @media (max-width: 480px) {
+            .section-title h2 { font-size: 2.2rem; }
+            .stats { grid-template-columns: 1fr; }
+            .model-container { height: 450px; padding: 1rem; }
+            .scene-container { height: 350px; }
+            .controls-3d { flex-direction: column; align-items: center; }
+            .control-btn-3d { width: 100%; max-width: 250px; }
+            .team-members { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-cube"></i>
+                <span>3D MudCooler</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#home" class="active">Home</a></li>
+                    <li><a href="#model">3D Model</a></li>
+                    <li><a href="#parts">Components</a></li>
+                    <li><a href="#setup">Setup Guide</a></li>
+                    <li><a href="#team">Our Team</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <h1>Interactive 3D Mud Pot Cooler</h1>
+            <p>Explore the complete DIY cooling system in full 3D. Rotate, zoom, and examine every component from all angles.</p>
+            <div class="cta-buttons">
+                <a href="#model" class="btn btn-primary">
+                    <i class="fas fa-play-circle"></i> Explore 3D Model
+                </a>
+                <a href="#parts" class="btn btn-secondary">
+                    <i class="fas fa-shopping-cart"></i> View Components
+                </a>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number">360°</div>
+                    <div class="stat-label">Full Rotation</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">3D Components</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">Real-time</div>
+                    <div class="stat-label">Interactive View</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">Drag</div>
+                    <div class="stat-label">To Rotate</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive 3D Model Section -->
+    <section id="model" class="model-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Interactive 3D Exploration</h2>
+                <p>Click and drag to rotate the model • Use buttons for preset views</p>
+            </div>
+            
+            <div class="model-container">
+                <div class="view-angle">
+                    <i class="fas fa-arrows-rotate"></i>
+                    <span>Rotation: <span id="rotationX">0°</span> horizontal, <span id="rotationY">0°</span> vertical</span>
+                </div>
+                
+                <div class="scene-container" id="sceneContainer">
+                    <div class="scene-3d" id="scene3d">
+                        <!-- Mud Pot -->
+                        <div class="component-3d mud-pot-3d">
+                            <div class="pot-body-3d"></div>
+                        </div>
+                        
+                        <!-- PC Fan -->
+                        <div class="component-3d fan-3d">
+                            <div class="fan-housing-3d"></div>
+                            <div class="fan-blades-3d-container">
+                                <div class="fan-blade-3d"></div>
+                                <div class="fan-blade-3d"></div>
+                                <div class="fan-blade-3d"></div>
+                                <div class="fan-blade-3d"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="controls-3d">
+                    <button class="control-btn-3d" onclick="setView('front')">
+                        <i class="fas fa-eye"></i> Front View
+                    </button>
+                    <button class="control-btn-3d" onclick="setView('top')">
+                        <i class="fas fa-angle-up"></i> Top View
+                    </button>
+                    <button class="control-btn-3d" onclick="setView('side')">
+                        <i class="fas fa-arrows-left-right"></i> Side View
+                    </button>
+                    <button class="control-btn-3d" onclick="setView('back')">
+                        <i class="fas fa-undo"></i> Back View
+                    </button>
+                    <button class="control-btn-3d" onclick="resetView()">
+                        <i class="fas fa-redo"></i> Reset View
+                    </button>
+                </div>
+                
+                <div class="view-info">
+                    <i class="fas fa-mouse-pointer"></i>
+                    <span>Drag the model to rotate • Click buttons for preset views</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Electronic Components Section - ADDED BACK -->
+    <section id="parts" class="parts-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Complete Electronic Components</h2>
+                <p>All parts required to build your own mud pot air cooler</p>
+            </div>
+            
+            <div class="parts-grid">
+                <div class="part-card">
+                    <div class="part-icon terracotta">
+                        <i class="fas fa-mug-hot"></i>
+                    </div>
+                    <div class="part-content">
+                        <h3>Terracotta Clay Pot</h3>
+                        <p>The heart of the cooling system. Made from natural porous clay, it absorbs and retains water for continuous evaporative cooling.</p>
+                        <div class="part-specs">
+                            <div class="spec-item">
+                                <span>Material</span>
+                                <span style="color: var(--primary); font-weight: 600;">Natural Terracotta</span>
+                            </div>
+                            <div class="spec-item">
+                                <span>Size</span>
+                                <span style="color: var(--primary); font-weight: 600;">Medium (1.5L)</span>
+                            </div>
+                            <div class="spec-item">
+                                <span>Function</span>
+                                <span style="color: var(--primary); font-weight: 600;">Cooling Element</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="part-card">
+                    <div class="part-icon fan">
+                        <i class="fas fa-fan"></i>
+                    </div>
+                    <div class="part-content">
+                        <h3>PC Cooling Fan (120mm)</h3>
+                        <p>Standard computer case fan with 4-pin connector. Provides airflow for the evaporative cooling process.</p>
+                        <div class="part-specs">
+                            <div class="spec-item">
+                                <span>Voltage</span>
+                                <span style="color: var(--primary); font-weight: 600;">5V DC</span>
+                            </div>
+                            <div class="spec-item">
+                                <span>Current</span>
+                                <span style="color: var(--primary); font-weight: 600;">0.2A</span>
+                            </div>
+                            <div class="spec-item">
+                                <span>Speed</span>
+                                <span style="color: var(--primary); font-weight: 600;">1500 RPM</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="part-card">
+                    <div class="part-icon usb">
+                        <i class="fas fa-usb"></i>
+                    </div>
+                    <div class="part-content">
+                        <h3>USB Cable & Connector</h3>
+                        <p>Standard USB-A to 4-pin fan connector cable. Powers the fan from any USB power source (laptop, power bank, adapter).</p>
+                        <div class="part-specs">
+                            <div class="spec-item">
+                                <span>Type</span>
+                                <span style="color: var(--primary); font-weight: 600;">USB-A Male</span>
+                            </div>
+                            <div class="spec-item">
+                                <span>Length</span>
+                                <span style="color: var(--primary); font-weight: 600;">1 Meter</span>
+                            </div>
+                            <div class="spec-item">
+                                <span>Connector</span>
+                                <span style="color: var(--primary); font-weight: 600;">4-pin PWM</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="part-card">
+                    <div class="part-icon thermometer">
+                        <i class="fas fa-thermometer-half"></i>
+                    </div>
+                    <div class="part-content">
+                        <h3>Digital Thermometer</h3>
+                        <p>Mini digital thermometer to measure temperature drop. Shows cooling effectiveness from 34°C to 26°C as in video.</p>
+                        <div class="part-specs">
+                            <div class="spec-item">
+                                <span>Range</span>
+                                <span style="color: var(--primary); font-weight: 600;">-50°C to 70°C</span>
+                            </div>
+                            <div class="spec-item">
+                                <span>Accuracy</span>
+                                <span style="color: var(--primary); font-weight: 600;">±1°C</span>
+                            </div>
+                            <div class="spec-item">
+                                <span>Display</span>
+                                <span style="color: var(--primary); font-weight: 600;">LCD Digital</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="part-card">
+                    <div class="part-icon power">
+                        <i class="fas fa-battery-full"></i>
+                    </div>
+                    <div class="part-content">
+                        <h3>USB Power Source</h3>
+                        <p>Can use laptop USB port, power bank, or USB wall adapter. Provides 5V DC power to run the cooling fan.</p>
+                        <div class="part-specs">
+                            <div class="spec-item">
+                                <span>Voltage</span>
+                                <span style="color: var(--primary); font-weight: 600;">5V DC</span>
+                            </div>
+                            <div class="spec-item">
+                                <span>Current</span>
+                                <span style="color: var(--primary); font-weight: 600;">1-2A</span>
+                            </div>
+                            <div class="spec-item">
+                                <span>Options</span>
+                                <span style="color: var(--primary); font-weight: 600;">Laptop/Power Bank</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="part-card">
+                    <div class="part-icon wires">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="part-content">
+                        <h3>Connecting Wires & Tools</h3>
+                        <p>Basic electrical wires, soldering iron (optional), and hot glue gun for assembly and securing components.</p>
+                        <div class="part-specs">
+                            <div class="spec-item">
+                                <span>Wire Gauge</span>
+                                <span style="color: var(--primary); font-weight: 600;">22 AWG</span>
+                            </div>
+                            <div class="spec-item">
+                                <span>Tools</span>
+                                <span style="color: var(--primary); font-weight: 600;">Hot Glue Gun</span>
+                            </div>
+                            <div class="spec-item">
+                                <span>Optional</span>
+                                <span style="color: var(--primary); font-weight: 600;">Soldering Iron</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Setup Guide Section - ADDED BACK -->
+    <section id="setup" class="setup-guide">
+        <div class="container">
+            <div class="section-title">
+                <h2>Step-by-Step Assembly Guide</h2>
+                <p>Follow these simple steps to build your mud pot cooler</p>
+            </div>
+            
+            <div class="setup-steps">
+                <div class="setup-step">
+                    <i class="fas fa-tint"></i>
+                    <h4>1. Prepare the Pot</h4>
+                    <p>Soak the terracotta pot in water for 2 hours to fully saturate the clay pores.</p>
+                </div>
+                
+                <div class="setup-step">
+                    <i class="fas fa-plug"></i>
+                    <h4>2. Connect Fan to USB</h4>
+                    <p>Connect the 4-pin fan connector to the USB cable. Match red wire to +5V, black to ground.</p>
+                </div>
+                
+                <div class="setup-step">
+                    <i class="fas fa-wind"></i>
+                    <h4>3. Mount the Fan</h4>
+                    <p>Position the fan above the pot to pull air through the wet clay surface.</p>
+                </div>
+                
+                <div class="setup-step">
+                    <i class="fas fa-bolt"></i>
+                    <h4>4. Power Connection</h4>
+                    <p>Connect USB to power source (laptop, power bank, or USB adapter).</p>
+                </div>
+                
+                <div class="setup-step">
+                    <i class="fas fa-thermometer"></i>
+                    <h4>5. Temperature Testing</h4>
+                    <p>Use digital thermometer to measure temperature drop (34°C → 26°C).</p>
+                </div>
+                
+                <div class="setup-step">
+                    <i class="fas fa-check-circle"></i>
+                    <h4>6. Final Assembly</h4>
+                    <p>Secure all components with hot glue and ensure proper airflow direction.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section - UPDATED WITH SPECIFIED ROLES -->
+    <section id="team" class="team-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Project Team</h2>
+                <p>Meet the talented individuals behind this innovative project</p>
+            </div>
+            
+            <div class="team-members">
+                <!-- Team Leader -->
+                <div class="team-member leader">
+                    <div class="member-avatar">
+                        MS
+                    </div>
+                    <h3>Momen Sayed</h3>
+                    <div class="team-role">Team Leader & Project Manager</div>
+                    <p>Oversees the entire project, coordinates team efforts, and ensures project milestones are met on schedule.</p>
+                </div>
+                
+                <!-- Website Creator -->
+                <div class="team-member">
+                    <div class="member-avatar">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3>Mazen Masoud</h3>
+                    <div class="team-role">Website Creator & Engineer</div>
+                    <p>Designed and developed the entire interactive 3D website, implementing the 3D model and all interactive features.</p>
+                </div>
+                
+                <!-- Researchers -->
+                <div class="team-member">
+                    <div class="member-avatar">
+                        YG
+                    </div>
+                    <h3>Yousef Gamal</h3>
+                    <div class="team-role">Researcher & Information Specialist</div>
+                    <p>Conducted extensive research on evaporative cooling technology and gathered technical specifications for all components.</p>
+                </div>
+                
+                <div class="team-member">
+                    <div class="member-avatar">
+                        FW
+                    </div>
+                    <h3>Fares Walid</h3>
+                    <div class="team-role">Researcher & Information Gatherer</div>
+                    <p>Collected data on traditional cooling methods and compiled comprehensive information about the DIY building process.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <div class="footer-logo">
+                        <i class="fas fa-cube"></i>
+                        <span>3D MudCooler</span>
+                    </div>
+                    <p>An interactive educational project demonstrating traditional evaporative cooling technology with modern 3D visualization.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 style="color: white; margin-bottom: 1.5rem; font-size: 1.3rem;">Quick Links</h3>
+                    <ul style="list-style: none;">
+                        <li style="margin-bottom: 0.8rem;"><a href="#model" style="color: rgba(255,255,255,0.8); text-decoration: none; transition: var(--transition);">Interactive 3D Model</a></li>
+                        <li style="margin-bottom: 0.8rem;"><a href="#parts" style="color: rgba(255,255,255,0.8); text-decoration: none; transition: var(--transition);">Components List</a></li>
+                        <li style="margin-bottom: 0.8rem;"><a href="#setup" style="color: rgba(255,255,255,0.8); text-decoration: none; transition: var(--transition);">Assembly Guide</a></li>
+                        <li style="margin-bottom: 0.8rem;"><a href="#team" style="color: rgba(255,255,255,0.8); text-decoration: none; transition: var(--transition);">Meet Our Team</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 style="color: white; margin-bottom: 1.5rem; font-size: 1.3rem;">Project Based On</h3>
+                    <p style="margin-bottom: 1rem; color: rgba(255,255,255,0.8);">DIY Tutorial: "How to make MUD POT Air COOLER at Home" by A2C Arts And Crafts</p>
+                    <p style="color: rgba(255,255,255,0.8);">Educational project for demonstrating evaporative cooling principles.</p>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 Interactive 3D Mud Pot Cooler Project. All rights reserved.</p>
+                <p style="margin-top: 0.5rem; color: rgba(255,255,255,0.6);">Created by Mazen Masoud (Website Engineer) | Led by Momen Sayed | Research by Yousef Gamal & Fares Walid</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 3D Model Interaction
+        let scene = document.getElementById('scene3d');
+        let container = document.getElementById('sceneContainer');
+        let isDragging = false;
+        let startX, startY;
+        let rotationX = 0;
+        let rotationY = 0;
+        let currentRotationX = 0;
+        let currentRotationY = 0;
+        
+        // Rotation display elements
+        const rotationXDisplay = document.getElementById('rotationX');
+        const rotationYDisplay = document.getElementById('rotationY');
+        
+        // Mouse drag interaction
+        container.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            container.style.cursor = 'grabbing';
+        });
+        
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            
+            const deltaX = e.clientX - startX;
+            const deltaY = e.clientY - startY;
+            
+            rotationY = currentRotationY + deltaX * 0.5;
+            rotationX = currentRotationX - deltaY * 0.3;
+            
+            updateRotation();
+        });
+        
+        document.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                currentRotationX = rotationX;
+                currentRotationY = rotationY;
+                container.style.cursor = 'grab';
+            }
+        });
+        
+        // Touch interaction for mobile
+        container.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+            e.preventDefault();
+        });
+        
+        document.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            
+            const deltaX = e.touches[0].clientX - startX;
+            const deltaY = e.touches[0].clientY - startY;
+            
+            rotationY = currentRotationY + deltaX * 0.5;
+            rotationX = currentRotationX - deltaY * 0.3;
+            
+            updateRotation();
+            e.preventDefault();
+        });
+        
+        document.addEventListener('touchend', () => {
+            if (isDragging) {
+                isDragging = false;
+                currentRotationX = rotationX;
+                currentRotationY = rotationY;
+            }
+        });
+        
+        // Update rotation and apply to all 3D components
+        function updateRotation() {
+            scene.style.transform = `translate(-50%, -50%) rotateX(${-10 + rotationX}deg) rotateY(${rotationY}deg)`;
+            
+            // Update all 3D components with the same rotation
+            document.querySelectorAll('.component-3d').forEach(component => {
+                component.style.setProperty('--rotate-y', `${rotationY}deg`);
+                component.style.setProperty('--rotate-x', `${rotationX}deg`);
+            });
+            
+            // Update rotation display
+            rotationXDisplay.textContent = `${Math.round(rotationX)}°`;
+            rotationYDisplay.textContent = `${Math.round(rotationY)}°`;
+        }
+        
+        // Preset views
+        function setView(viewType) {
+            switch(viewType) {
+                case 'front':
+                    rotationX = 0;
+                    rotationY = 0;
+                    break;
+                case 'top':
+                    rotationX = -80;
+                    rotationY = 0;
+                    break;
+                case 'side':
+                    rotationX = 0;
+                    rotationY = 90;
+                    break;
+                case 'back':
+                    rotationX = 0;
+                    rotationY = 180;
+                    break;
+            }
+            currentRotationX = rotationX;
+            currentRotationY = rotationY;
+            updateRotation();
+        }
+        
+        function resetView() {
+            rotationX = 0;
+            rotationY = 0;
+            currentRotationX = 0;
+            currentRotationY = 0;
+            updateRotation();
+        }
+        
+        // Initialize
+        updateRotation();
+        
+        // Add interactive hover effects to components
+        document.querySelectorAll('.component-3d').forEach(component => {
+            component.addEventListener('mouseenter', () => {
+                component.style.transform += ' scale(1.05)';
+            });
+            
+            component.addEventListener('mouseleave', () => {
+                component.style.transform = component.style.transform.replace(' scale(1.05)', '');
+            });
+        });
+        
+        // Smooth scrolling for navigation
+        document.querySelectorAll('nav a, .cta-buttons a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId.startsWith('#')) {
+                    const targetSection = document.querySelector(targetId);
+                    if (targetSection) {
+                        window.scrollTo({
+                            top: targetSection.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+        });
+        
+        // Active nav link on scroll
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('nav a');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= (sectionTop - 150)) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+        
+        // Animate stats counters
+        document.addEventListener('DOMContentLoaded', () => {
+            const stats = document.querySelectorAll('.stat-number');
+            stats.forEach(stat => {
+                const text = stat.textContent;
+                if (!isNaN(parseInt(text))) {
+                    const target = parseInt(text);
+                    let current = 0;
+                    const increment = target / 30;
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= target) {
+                            current = target;
+                            clearInterval(timer);
+                        }
+                        stat.textContent = Math.floor(current);
+                    }, 30);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
